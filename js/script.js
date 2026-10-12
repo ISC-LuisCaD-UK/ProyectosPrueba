@@ -1,0 +1,1 @@
+// Script para la estructura semántica de HTML 5

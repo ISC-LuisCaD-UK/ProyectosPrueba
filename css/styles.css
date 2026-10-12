@@ -1,0 +1,15 @@
+h1{
+    color: #333;
+    font-size: 2.5em;
+    text-align: center;
+}
+p{
+    color: #666;
+    font-size: 1.2em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    line-height: 1.6;
+    margin: 0 0 1em 0;
+}
+email{
+    font-family:cursive;
+}

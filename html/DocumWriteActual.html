@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Comparativo de alternativas a document.write</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .bloque { margin: 10px 0; padding: 8px; border: 1px solid #ccc; }
+    .titulo { font-weight: bold; color: darkblue; }
+  </style>
+</head>
+<body>
+  <h2>Alternativas modernas a document.write</h2>
+
+  <div id="textContent" class="bloque">
+    <span class="titulo">textContent:</span>
+  </div>
+
+  <div id="innerHTML" class="bloque">
+    <span class="titulo">innerHTML:</span>
+  </div>
+
+  <div id="createElement" class="bloque">
+    <span class="titulo">createElement + appendChild:</span>
+  </div>
+
+  <div id="insertAdjacent" class="bloque">
+    <span class="titulo">insertAdjacentHTML:</span>
+  </div>
+
+  <div id="fragmento" class="bloque">
+    <span class="titulo">DocumentFragment:</span>
+    <ul id="lista"></ul>
+  </div>
+
+  <script>
+    // 1. textContent
+    document.querySelector("#textContent").textContent += " Hola mundo con textContent";
+
+    // 2. innerHTML
+    document.querySelector("#innerHTML").innerHTML += " <b>Hola mundo con innerHTML</b>";
+
+    // 3. createElement + appendChild
+    let p = document.createElement("p");
+    p.textContent = "Hola mundo con createElement";
+    document.querySelector("#createElement").appendChild(p);
+
+    // 4. insertAdjacentHTML
+    document.querySelector("#insertAdjacent")
+      .insertAdjacentHTML("beforeend", "<p>Hola mundo con insertAdjacentHTML</p>");
+
+    // 5. DocumentFragment
+    let frag = document.createDocumentFragment();
+    for (let i = 1; i <= 3; i++) {
+      let li = document.createElement("li");
+      li.textContent = "Item " + i;
+      frag.appendChild(li);
+    }
+    document.querySelector("#lista").appendChild(frag);
+  </script>
+</body>
+</html>

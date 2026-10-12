@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Javascript con Form y Option</title>
+</head>
+<body>
+<script type="text/javascript">
+	function hola() {
+		// body...
+		if (document.formulario.nombre.value == "Carlos") {
+			alert("Buenos dias Carlos. Hace rato te esperaba.");
+			}
+		else
+			{
+				alert("No te conozco, pero de todas formas, buenos dias.");
+			}
+	}
+</script>
+<form action="" id="formulario" name="formulario">
+	<p>
+		Seleccione un nombre de la lista:
+		<select name="nombre" size="1" onchange="hola()">
+			<option value="Manolo">Manolo</option>
+			<option	value="Lucas">Lucas</option>
+			<option value="Carlos">Carlos</option>
+			<option value="Jose">Jos&eacute</option>
+			<option value="Javier">Javier</option>
+		</select>
+	</p>
+</form>
+</body>
+</html>

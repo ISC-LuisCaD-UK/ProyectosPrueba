@@ -1,0 +1,145 @@
+freeCodeCamp.org
+
+<!-- 
+<meta property="og:title" content="freeCodeCamp.org" />
+<meta property="og:description" content="Description of the website"
+<meta property="og:type"  content="website" />
+<meta property="og:image" content="https://cdn.freecodecamp.org/platform/universal/fcc_meta_1920X1080-indigo.png" />
+<meta property="og:url"   content="https://www.freecodecamp.org" />
+
+¿Cuál es el papel de las etiquetas Open Graph y cómo afectan al SEO?
+El protocolo Open Graph le permite controlar cómo aparece el contenido de su sitio web en varias plataformas de redes sociales, como Facebook, LinkedIn y muchas más. Al establecer estas propiedades de Open Graph, puede atraer a los usuarios a querer hacer clic e interactuar con su contenido. Puede establecer estas propiedades a través de una colección de elementos meta dentro de su sección head en HTML.
+
+La primera propiedad de OG importante para incluir sería el title. Aquí hay un ejemplo de cómo establecer el OG title para la página de inicio de freeCodeCamp:
+
+Código de ejemplo
+
+<meta content="freeCodeCamp.org" property="og:title" />
+
+Para el atributo property, necesitará especificar que es og:title. El atributo content es donde escribirá el título que desea que aparezca en los sitios de redes sociales.
+
+La siguiente propiedad de OG importante sería el type. Aquí hay un ejemplo de cómo usar el OG type para la página de inicio de freeCodeCamp:
+
+Código de ejemplo
+
+<meta property="og:type" content="website" />
+
+La propiedad type se utiliza para representar el tipo de contenido que se comparte en redes sociales. Ejemplos de este contenido incluyen artículos, sitios web, videos o música.
+
+La tercera propiedad de OG importante sería el image. Aquí hay un ejemplo de cómo establecer el OG image para la página de inicio de freeCodeCamp:
+
+Código de ejemplo
+
+<meta content="https://cdn.freecodecamp.org/platform/universal/fcc_meta_1920X1080-indigo.png" property="og:image" />
+
+En este ejemplo, la imagen de Open Graph apunta al logotipo de freeCodeCamp. Todas estas imágenes deben tener buena calidad con dimensiones y proporciones adecuadas. La mayoría de las plataformas de redes sociales incluirán criterios para los requisitos de imágenes para ayudarlo a garantizar que su contenido se muestre bien en su sitio. Por ejemplo, la página de documentación de developers.facebook.com indica:
+
+"use imágenes de al menos 1200 por 630 píxeles para la mejor presentación en dispositivos de alta resolución. Al mínimo, debe usar imágenes de 600 por 315 píxeles para mostrar publicaciones de páginas de enlace con imágenes más grandes."
+
+La cuarta propiedad de OG importante sería el url. Aquí hay un ejemplo de cómo establecer el OG url para la página de inicio de freeCodeCamp:
+
+Código de ejemplo
+
+<meta property="og:url" content="https://www.freecodecamp.org" />
+
+Hay muchas más propiedades de OG que puede establecer, como description, audio, video y locale. Sin embargo, el Open Graph url, image, type y title son las más importantes para incluir.
+
+¿Entonces, cómo afectan estas propiedades de open graph al posicionamiento en buscadores? Cuando tu contenido se comparte en redes sociales, unas propiedades OG bien diseñadas pueden mejorar la apariencia de tu contenido en los feeds de los usuarios. Esto puede generar tasas de clics más altas, lo que podría indicar a los motores de búsqueda que tu contenido es relevante y atractivo.
+
+-->
+
+
+<!--
+AUDIO Y VIDEO EN HTML
+
+Los elementos audio y video te permiten añadir contenido de sonido y video a tus documentos HTML. El elemento audio soporta formatos de audio populares como mp3, wav y ogg. El elemento video soporta formatos mp4, ogg y webm.
+
+Agregar audio con el atributo src. Para incluir contenido de audio en tu página web, puedes usar el elemento audio con el atributo src que apunta a la ubicación de tu archivo de audio.
+
+Como puedes ver en la ventana de vista previa, no aparece nada en la página. Para ver las vistas previas, necesitarás habilitar el editor interactivo.
+
+<audio src="https://cdn.freecodecamp.org/curriculum/js-music-player/cruising-for-a-musing.mp3"></audio>
+
+
+Agregar controles de reproducción con el atributo controls. Si quieres ver el reproductor de audio en la página, entonces puedes agregar el elemento audio con el atributo controls.
+
+Presiona play en la ventana de vista previa para escuchar una de las canciones de Quincy Larson. Para escuchar una canción diferente, cambia el valor de src a "https://cdn.freecodecamp.org/curriculum/js-music-player/never-not-favored.mp3". Para ver las vistas previas, necesitarás habilitar el editor interactivo.
+
+<audio src="https://cdn.freecodecamp.org/curriculum/js-music-player/cruising-for-a-musing.mp3" controls></audio>
+
+El atributo controls habilita a los usuarios para gestionar la reproducción de audio, incluyendo pausar o reanudar la reproducción. El atributo controls es un atributo booleano que se puede agregar a un elemento para habilitar controles de reproducción integrados. Si se omite, no se mostrarán controles. Nota: Algunos navegadores, como Safari, pueden no mostrar un control de volumen por defecto incluso cuando el atributo controls está presente.
+
+Repetir audio con el atributo loop
+
+Además de los atributos src y controls, hay varios otros atributos que mejoran la funcionalidad del elemento audio. El atributo loop es un atributo booleano que hace que el audio se reproduzca continuamente. Aquí tienes un ejemplo de cómo usar el atributo loop para reproducir una de las canciones de Quincy Larson titulada "Can't stay down". Para ver el ciclo en acción, habilita el editor interactivo, mueve el cabezal de reproducción cerca del final de la canción y esta se reiniciará una vez que termine.
+
+<audio
+  src="https://cdn.freecodecamp.org/curriculum/js-music-player/can't-stay-down.mp3"
+  loop
+  controls
+></audio>
+
+Silenciar audio con el atributo muted. Otro atributo que puedes usar es el atributo muted. Cuando está presente en el elemento audio, este atributo booleano inicia el audio en un estado silenciado. Aquí tienes un ejemplo de cómo usar el atributo muted. Para escuchar la música, activa el editor interactivo y haz clic en el ícono de volumen en el reproductor de audio.
+
+<audio
+  src="https://cdn.freecodecamp.org/curriculum/js-music-player/can't-stay-down.mp3"
+  loop
+  controls
+  muted
+></audio>
+
+Soporte para múltiples formatos de audio. En cuanto a los tipos de archivos de audio, hay diferencias en qué navegadores soportan qué tipo. Para acomodar esto, puedes usar elementos source dentro del elemento audio, y el navegador seleccionará la primera fuente que comprenda. Aquí tienes un ejemplo de uso de múltiples elementos source para un elemento audio:
+
+<audio controls>
+  <source src="audio.ogg" type="audio/ogg" />
+  <source src="audio.wav" type="audio/wav" />
+  <source src="audio.mp3" type="audio/mpeg" />
+</audio>
+
+El navegador empezará primero con el tipo ogg, y si no puede reproducir el audio, pasará al siguiente tipo en la lista.
+
+Uso del elemento video. Todos los atributos que hemos aprendido hasta ahora también son compatibles con el elemento video. Aquí tienes un ejemplo de cómo usar un elemento video con los atributos loop, controls y muted.
+
+Agrega el atributo autoplay a la etiqueta de apertura video para que el video se reproduzca automáticamente. Para interactuar con el ejemplo, necesitarás habilitar el editor interactivo.
+
+Nota: El atributo width se está usando aquí para hacer que el video sea más pequeño y se ajuste mejor en la ventana de vista previa. Aprenderás más sobre el atributo width en lecciones futuras.
+
+<video
+  src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
+  loop
+  controls
+  muted
+  width="400"
+></video>
+
+Mostrar una imagen de vista previa con el atributo poster. Para el atributo src, o atributo fuente, estamos usando un video llamado "Big Buck Bunny" de archive.org. Si quieres mostrar una imagen mientras el video se descarga, puedes usar el atributo poster. Este atributo no está disponible para elementos audio y es exclusivo del elemento video. Aquí tienes un ejemplo de cómo usar el atributo poster con contenido proporcionado por peach.blender.org.
+
+<video
+  src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
+  loop
+  controls
+  muted
+  poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217"
+  width="400"
+></video>
+
+Soporte para múltiples formatos de video. También puedes usar el elemento source dentro de un elemento video, tal como hiciste con el elemento audio. Esto te permite proporcionar el mismo video en múltiples formatos, y el navegador elegirá el primero que pueda reproducir.
+
+<video
+  controls
+  width="400"
+  poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217"
+>
+  <source
+    src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
+    type="video/mp4"
+  />
+  <source
+    src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.webm"
+    type="video/webm"
+  />
+
+  Your browser does not support the video tag.
+
+</video>
+-->

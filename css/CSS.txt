@@ -1,0 +1,313 @@
+CSS
+
+All CSS Simple Selectors
+Selector		Example		Example description
+#id			#firstname	Selects the element with id="firstname"
+.class			.intro		Selects all elements with class="intro"
+*			*		Selects all elements
+element			p		Selects all <p> elements
+element,element,..	div, p		Selects all <div> elements and all <p> elements
+
+External CSS
+<head>
+	<link rel="stylesheet" href="mystyle.css">
+</head>
+
+	The external .css file should not contain any HTML tags.
+
+example "mystyle.css"
+body {
+ 	background-color: lightblue;
+}
+
+h1 {
+ 	color: navy;
+ 	margin-left: 20px;
+}
+
+/* Note: Do not add a space between the property value (20) and the unit (px):
+	Incorrect (space): margin-left: 20 px;
+	Correct (no space): margin-left: 20px;	*/
+
+Internal CSS
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body {
+  			background-color: linen;
+		}
+
+		h1 {
+  			color: maroon;
+  			margin-left: 40px;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>This is a heading</h1>
+	<p>This is a paragraph.</p>
+
+</body>
+</html>
+
+Inline CSS 	/* Not very useful but it works */
+<!DOCTYPE html>
+<html>
+<body>
+	<h1 style="color:blue;text-align:center;">This is a heading</h1>
+	<p style="color:red;">This is a paragraph.</p>
+</body>
+</html>
+
+Cascading Order 		/* THIS IS IMPORTANT: IF AN STYLE IS OVERRIDE BY ANOTHER, YOU SHOULD CHECK THIS */
+What style will be used when there is more than one style specified for an HTML element?
+
+All the styles in a page will "cascade" into a new "virtual" style sheet by the following rules, where number one has the highest priority:
+
+1.- Inline style (inside an HTML element)
+2.- External and internal style sheets (in the head section)
+3.- Browser default
+
+So, an inline style has the highest priority, and will override external and internal styles and browser defaults.
+
+CSS Comments
+
+/* This is a single-line comment */		<--comment
+p {
+  color: red;
+}
+
+p {
+  color: red;  /* Set text color to red */	<-- coomment
+}
+
+p {
+  color: /*red*/blue; 		<-- comment
+}
+
+/* This is
+a multi-line		<-- multiline comment
+comment */
+
+p {
+  color: red;
+}
+
+Tips to Avoid CSS Errors
+	- Use a code editor with syntax highlighting.
+	- Validate your CSS with a CSS linter or validator.
+	- Write CSS in small sections and test frequently.
+
+CSS Colors 
+https://www.w3schools.com/colors/colors_names.asp
+
+CSS Background Color
+You can set the background color for HTML elements:
+Example
+	<h1 style="background-color:DodgerBlue;">Hello World</h1>
+	<p style="background-color:Tomato;">Lorem ipsum...</p>
+
+CSS Text Color
+You can set the color of text:
+Example
+	<h1 style="color:Tomato;">Hello World</h1>
+	<p style="color:DodgerBlue;">Lorem ipsum...</p>
+	<p style="color:MediumSeaGreen;">Ut wisi enim...</p>
+
+CSS Border Color
+This draws a border around text
+You can set the color of borders:
+Example
+	<h1 style="border:2px solid Tomato;">Hello World</h1>
+	<h1 style="border:2px solid DodgerBlue;">Hello World</h1>
+	<h1 style="border:2px solid Violet;">Hello World</h1>
+
+CSS Color Values
+In CSS, colors can also be specified using RGB values, HEX values, HSL values, RGBA values, and HSLA values:
+
+Same as color name "Tomato":
+
+	rgb(255, 99, 71)	#ff6347		hsl(9, 100%, 64%)
+Example
+	<h1 style="background-color:rgb(255, 99, 71);">...</h1>
+	<h1 style="background-color:#ff6347;">...</h1>
+	<h1 style="background-color:hsl(9, 100%, 64%);">...</h1>
+
+Same as color name "Tomato", but 50% transparent:
+
+	rgba(255, 99, 71, 0.5)		hsla(9, 100%, 64%, 0.5)
+Example
+	<h1 style="background-color:rgba(255, 99, 71, 0.5);">...</h1>
+	<h1 style="background-color:hsla(9, 100%, 64%, 0.5);">...</h1>
+
+
+CSS Backgrounds
+The CSS background properties are used to add background effects for elements.
+
+In these chapters, you will learn about the following CSS background properties:
+
+	background-color
+	background-image
+	background-repeat
+	background-attachment
+	background-position
+	background (shorthand property)
+
+CSS background-color
+The background-color property specifies the background color of an element.
+
+Example
+The background color of a complete page is set like this:
+
+body {
+  	background-color: lightblue;
+}
+
+With CSS, a color is most often specified by:
+
+	a valid color name - like "red"
+	a HEX value - like "#ff0000"
+	an RGB value - like "rgb(255,0,0)"
+
+Look at CSS Color Values for a complete list of possible color values.
+
+Other Elements
+You can set the background color for any HTML elements:
+
+Example
+Here, the <h1>, <p>, and <div> elements will have different background colors: 
+
+h1 {
+  	background-color: green;
+}
+
+div {
+  	background-color: lightblue;
+}
+
+p {
+  	background-color: yellow;
+}
+
+Opacity / Transparency
+The opacity property specifies the opacity/transparency of an element. It can take a value from 0.0 - 1.0. The lower value, the more transparent:
+
+Example
+div {
+  	background-color: green;
+  	opacity: 0.3;
+}
+Note: When using the opacity property to add transparency to the background of an element, all of its child elements inherit the same transparency. This can make the text inside a fully transparent element hard to read.
+
+Transparency using RGBA
+If you do not want to apply opacity to child elements, like in our example above, use RGBA color values. You learned from our CSS Colors Chapter, that you can use RGB as a color value. In addition to RGB, you can use an RGB color value with an alpha channel (RGBA) - which specifies the opacity for a color.
+
+An RGBA color value is specified with: rgba(red, green, blue, alpha). The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque).
+
+Tip: You will learn more about RGBA Colors in our CSS Colors Chapter.
+
+Example
+div {
+  	background: rgba(0, 128, 0, 0.3) /* Green background with 30% opacity */
+}
+
+CSS background-image
+The background-image property specifies an image to use as the background of an element. By default, the image is repeated so it covers the entire element.
+
+Example
+Set the background image for a page: 
+
+body {
+  	background-image: url("paper.gif");
+}
+Example
+This example shows a bad combination of text and background image. The text is hardly readable: 
+
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body {
+  			background-image: url("bgdesert.jpg");
+		}
+	</style>
+</head>
+<body>
+	<h1>Hello World!</h1>
+	<p>This text is not easy to read on this background image.</p>
+</body>
+</html>
+Note: When using a background image, use an image that does not disturb the text.
+
+The background image can also be set for specific elements, like the <p> element:
+
+Example
+p {
+  	background-image: url("paper.gif");
+}
+
+CSS background-repeat
+The background-repeat property sets if/how a background image will be repeated. By default, a background-image is repeated both vertically and horizontally. Some images should be repeated only horizontally or vertically, or they will look strange, like this:
+
+Example
+body {
+  	background-image: url("gradient_bg.png");
+}
+CSS background-repeat Horizontally
+If the image above is repeated only horizontally (background-repeat: repeat-x;), the background will look better:
+
+Example
+body {
+  	background-image: url("gradient_bg.png");
+  	background-repeat: repeat-x;
+}
+Tip: To repeat an image only vertically, use background-repeat: repeat-y;
+
+CSS background-repeat: no-repeat
+Showing the background image only once is also specified by the background-repeat property:
+
+Example
+Show the background image only once:
+
+body {
+  	background-image: url("img_tree.png");
+  	background-repeat: no-repeat;
+}
+In the example above, the background image is placed in the same place as the text. We want to change the position of the image, so that it does not disturb the text too much.
+
+CSS background-position
+The background-position property is used to set the starting position of the background image.
+
+By default, a background-image is placed at the top-left corner of an element.
+
+Example
+Position the background image in the top-right corner: 
+
+body {
+  	background-image: url("img_tree.png");
+  	background-repeat: no-repeat;
+  	background-position: right top;
+}
+
+background-position: value;
+Property Values
+Value			Description
+left top		If you only specify one keyword, the other value will be "center"
+left center
+left bottom
+right top
+right center
+right bottom
+center top
+center center
+center bottom		
+x% y%			The first value is the horizontal position and the second value is the vertical. The top left corner is 0% 0%. 
+			The right bottom corner is 100% 100%. If you only specify one value, the other value will be 50%. Default value is: 0% 0%
+xpos ypos		The first value is the horizontal position and the second value is the vertical. The top left corner is 0 0. 
+			Units can be pixels (0px 0px) or any other CSS units. If you only specify one value, the other value will be 50%. 
+			You can mix % and positions	
+initial			Sets this property to its default value. Read about initial	
+inherit			Inherits this property from its parent element. 
+
