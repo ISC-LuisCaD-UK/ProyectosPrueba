@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD con Arreglos, Teléfono, Rol y Validaciones</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 780px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #1f2937;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    input, select, button {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    button {
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .btn-cancel {
+      background: #64748b;
+    }
+    .btn-cancel:hover {
+      background: #475569;
+    }
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 0.7rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.65rem 0.5rem;
+      text-align: left;
+    }
+    .badge {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .acciones {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-edit {
+      background: #f59e0b;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+    }
+    .btn-del {
+      background: #ef4444;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Gestión de Usuarios</h2>
+
+  <div id="mensajeError" class="error-box" role="alert"></div>
+
+  <form id="formulario" novalidate>
+    <input type="hidden" id="indiceEdicion" value="-1">
+
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <input type="email" id="correo" placeholder="Correo electrónico">
+    <input type="tel" id="telefono" placeholder="Teléfono (ej. 6621234567)">
+
+    <select id="rol">
+      <option value="">Selecciona un rol</option>
+      <option value="Usuario">Usuario</option>
+      <option value="Editor">Editor</option>
+      <option value="Administrador">Administrador</option>
+    </select>
+
+    <button type="submit" id="btnGuardar">Agregar</button>
+    <button type="button" id="btnCancelar" class="btn-cancel" style="display: none;">Cancelar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo"></tbody>
+  </table>
+
+  <script>
+    const CLAVE_STORAGE = 'usuarios_db_v2';
+    let usuarios = [];
+
+    try {
+      const guardados = JSON.parse(localStorage.getItem(CLAVE_STORAGE));
+      usuarios = Array.isArray(guardados) ? guardados : [];
+    } catch {
+      usuarios = [];
+    }
+
+    const form = document.getElementById('formulario');
+    const tablaCuerpo = document.getElementById('tablaCuerpo');
+    const mensajeError = document.getElementById('mensajeError');
+
+    const inputNombre = document.getElementById('nombre');
+    const inputCorreo = document.getElementById('correo');
+    const inputTelefono = document.getElementById('telefono');
+    const selectRol = document.getElementById('rol');
+    const inputIndice = document.getElementById('indiceEdicion');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const btnCancelar = document.getElementById('btnCancelar');
+
+    function mostrarError(texto) {
+      mensajeError.textContent = texto;
+      mensajeError.style.display = 'block';
+    }
+
+    function limpiarError() {
+      mensajeError.textContent = '';
+      mensajeError.style.display = 'none';
+    }
+
+    function validarUsuario({ nombre, correo, telefono, rol }, indiceActual) {
+      if (nombre.length < 2) {
+        return 'El nombre debe tener al menos 2 caracteres.';
+      }
+
+      const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regexCorreo.test(correo)) {
+        return 'Ingresa un correo electrónico válido.';
+      }
+
+      // Evita correos duplicados (ignorando el mismo registro al editar)
+      const correoDuplicado = usuarios.some(
+        (u, idx) => u.correo.toLowerCase() === correo.toLowerCase() && idx !== indiceActual
+      );
+      if (correoDuplicado) {
+        return 'Ya existe un usuario registrado con ese correo.';
+      }
+
+      // Conserva solo dígitos para validar longitud mínima de teléfono
+      const soloDigitos = telefono.replace(/\D/g, '');
+      if (soloDigitos.length < 7) {
+        return 'El teléfono debe tener al menos 7 dígitos.';
+      }
+
+      const rolesValidos = ['Usuario', 'Editor', 'Administrador'];
+      if (!rolesValidos.includes(rol)) {
+        return 'Selecciona un rol válido.';
+      }
+
+      return null;
+    }
+
+    function sincronizar() {
+      localStorage.setItem(CLAVE_STORAGE, JSON.stringify(usuarios));
+      renderizarTabla();
+    }
+
+    function escaparHTML(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+
+    function renderizarTabla() {
+      tablaCuerpo.innerHTML = '';
+
+      if (usuarios.length === 0) {
+        tablaCuerpo.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: #64748b;">
+              No hay usuarios registrados todavía.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      usuarios.forEach((usuario, index) => {
+        tablaCuerpo.innerHTML += `
+          <tr>
+            <td>${escaparHTML(usuario.nombre)}</td>
+            <td>${escaparHTML(usuario.correo)}</td>
+            <td>${escaparHTML(usuario.telefono)}</td>
+            <td><span class="badge">${escaparHTML(usuario.rol)}</span></td>
+            <td>
+              <div class="acciones">
+                <button type="button" class="btn-edit" onclick="prepararEdicion(${index})">Editar</button>
+                <button type="button" class="btn-del" onclick="eliminar(${index})">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function resetearFormulario() {
+      form.reset();
+      inputIndice.value = '-1';
+      btnGuardar.textContent = 'Agregar';
+      btnCancelar.style.display = 'none';
+      limpiarError();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      limpiarError();
+
+      const indice = parseInt(inputIndice.value, 10);
+      const datosUsuario = {
+        nombre: inputNombre.value.trim(),
+        correo: inputCorreo.value.trim(),
+        telefono: inputTelefono.value.trim(),
+        rol: selectRol.value
+      };
+
+      const error = validarUsuario(datosUsuario, indice);
+      if (error) {
+        mostrarError(error);
+        return;
+      }
+
+      if (indice === -1) {
+        usuarios.push(datosUsuario);
+      } else {
+        usuarios[indice] = datosUsuario;
+      }
+
+      resetearFormulario();
+      sincronizar();
+    });
+
+    btnCancelar.addEventListener('click', resetearFormulario);
+
+    function prepararEdicion(index) {
+      const usuario = usuarios[index];
+      if (!usuario) return;
+
+      limpiarError();
+      inputNombre.value = usuario.nombre;
+      inputCorreo.value = usuario.correo;
+      inputTelefono.value = usuario.telefono;
+      selectRol.value = usuario.rol;
+      inputIndice.value = index;
+      btnGuardar.textContent = 'Actualizar';
+      btnCancelar.style.display = 'inline-block';
+    }
+
+    function eliminar(index) {
+      usuarios.splice(index, 1);
+      if (parseInt(inputIndice.value, 10) === index) {
+        resetearFormulario();
+      }
+      sincronizar();
+    }
+
+    renderizarTabla();
+  </script>
+
+</body>
+</html>

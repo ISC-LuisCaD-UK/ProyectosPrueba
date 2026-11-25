@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD de Calificaciones y Atenuantes</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 860px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #1f2937;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+      align-items: start;
+    }
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+    input, textarea, button {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    textarea {
+      grid-column: 1 / -1;
+      min-height: 68px;
+      resize: vertical;
+    }
+    .ayuda {
+      grid-column: 1 / -1;
+      font-size: 0.82rem;
+      color: #475569;
+      background: #f8fafc;
+      padding: 0.55rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .acciones-form {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 0.5rem;
+    }
+    button {
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .btn-cancel {
+      background: #64748b;
+    }
+    .btn-cancel:hover {
+      background: #475569;
+    }
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 0.7rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.2rem;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.65rem 0.5rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    .nota-pill {
+      font-weight: 700;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      display: inline-block;
+    }
+    .acciones {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-edit {
+      background: #f59e0b;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+    }
+    .btn-del {
+      background: #ef4444;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Registro de Calificaciones</h2>
+
+  <div id="mensajeError" class="error-box" role="alert"></div>
+
+  <form id="formulario" novalidate>
+    <input type="hidden" id="indiceEdicion" value="-1">
+
+    <div class="campo">
+      <label for="nombre">Nombre / Alumno</label>
+      <input type="text" id="nombre" placeholder="Ej. Ana López">
+    </div>
+
+    <div class="campo">
+      <label for="atenuantes">Atenuantes</label>
+      <input type="text" id="atenuantes" placeholder="Ej. MB+, N, TC, TPF">
+    </div>
+
+    <div class="campo">
+      <label for="calificacion">Calificación</label>
+      <input type="number" id="calificacion" min="0" max="100" step="1" placeholder="0 - 100">
+    </div>
+
+    <textarea id="notas" placeholder="Notas u observaciones adicionales (opcional)"></textarea>
+
+    <div class="ayuda">
+      <strong>Aprobatorias (100):</strong> B, MB, MB+, XC &nbsp;|&nbsp;
+      <strong>Sin calificación (0):</strong> N &nbsp;|&nbsp;
+      <strong>Atenuantes:</strong> T (-10), F (-20), P (-30), C (-40) — combinables (ej. <code>TC</code> = 100 - 50 = 50).
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" id="btnGuardar">Agregar</button>
+      <button type="button" id="btnCancelar" class="btn-cancel" style="display: none;">Cancelar</button>
+    </div>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Atenuantes</th>
+        <th>Calificación</th>
+        <th>Notas</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo"></tbody>
+  </table>
+
+  <script>
+    const CLAVE_STORAGE = 'calificaciones_db_v1';
+    let registros = [];
+
+    try {
+      const guardados = JSON.parse(localStorage.getItem(CLAVE_STORAGE));
+      registros = Array.isArray(guardados) ? guardados : [];
+    } catch {
+      registros = [];
+    }
+
+    const form = document.getElementById('formulario');
+    const tablaCuerpo = document.getElementById('tablaCuerpo');
+    const mensajeError = document.getElementById('mensajeError');
+
+    const inputNombre = document.getElementById('nombre');
+    const inputAtenuantes = document.getElementById('atenuantes');
+    const inputCalificacion = document.getElementById('calificacion');
+    const inputNotas = document.getElementById('notas');
+    const inputIndice = document.getElementById('indiceEdicion');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const btnCancelar = document.getElementById('btnCancelar');
+
+    const APROBATORIAS = new Set(['B', 'MB', 'MB+', 'XC']);
+    const PENALIZACIONES = {
+      T: 10,
+      F: 20,
+      P: 30,
+      C: 40
+    };
+
+    // Extrae tokens válidos como MB+, MB, B, XC, N, T, C, P, F
+    function parsearAtenuantes(texto) {
+      const limpio = texto.toUpperCase().trim();
+      if (!limpio) {
+        return { tokens: [], tokensInvalidos: [] };
+      }
+
+      // Separa por espacios, comas o diagonales; si un bloque sin separadores
+      // está formado solo por letras de penalización (T, C, P, F), lo divide por letra.
+      const partesCrudas = limpio.split(/[\s,;/]+/).filter(Boolean);
+      const tokens = [];
+      const tokensInvalidos = [];
+
+      for (const parte of partesCrudas) {
+        if (APROBATORIAS.has(parte) || parte === 'N' || parte in PENALIZACIONES) {
+          tokens.push(parte);
+        } else if (/^[TCPF]+$/.test(parte)) {
+          for (const letra of parte) {
+            tokens.push(letra);
+          }
+        } else {
+          tokensInvalidos.push(parte);
+        }
+      }
+
+      return { tokens, tokensInvalidos };
+    }
+
+    // Calcula la calificación a partir del texto de atenuantes
+    function calcularCalificacion(textoAtenuantes, calificacionActual = null) {
+      const { tokens, tokensInvalidos } = parsearAtenuantes(textoAtenuantes);
+
+      if (tokensInvalidos.length > 0) {
+        return {
+          valido: false,
+          error: `Atenuante no reconocido: "${tokensInvalidos.join(', ')}". Usa B, MB, MB+, XC, N, T, C, P o F.`
+        };
+      }
+
+      if (tokens.length === 0) {
+        if (calificacionActual !== null && calificacionActual !== '' && !Number.isNaN(Number(calificacionActual))) {
+          return { valido: true, calificacion: Number(calificacionActual) };
+        }
+        return {
+          valido: false,
+          error: 'Ingresa al menos una letra en Atenuantes o especifica una Calificación.'
+        };
+      }
+
+      // Si se incluye alguna letra aprobatoria (B, MB, MB+, XC)
+      const tieneAprobatoria = tokens.some((t) => APROBATORIAS.has(t));
+      const tieneN = tokens.includes('N');
+      const atenuantesResta = tokens.filter((t) => t in PENALIZACIONES);
+
+      if (tieneAprobatoria) {
+        if (tieneN || atenuantesResta.length > 0) {
+          return {
+            valido: false,
+            error: 'No combines letras aprobatorias (B, MB, MB+, XC) con N ni con atenuantes de descuento (T, C, P, F).'
+          };
+        }
+        return { valido: true, calificacion: 100 };
+      }
+
+      // Si hay atenuantes de descuento (T, C, P, F), se asume base 100
+      // (aun cuando N indique 0 o no haya calificación previa)
+      if (atenuantesResta.length > 0) {
+        const totalDescuento = atenuantesResta.reduce((acc, letra) => acc + PENALIZACIONES[letra], 0);
+        const resultado = Math.max(0, 100 - totalDescuento);
+        return { valido: true, calificacion: resultado };
+      }
+
+      // Si solo contiene N
+      if (tieneN) {
+        return { valido: true, calificacion: 0 };
+      }
+
+      return { valido: true, calificacion: 0 };
+    }
+
+    // Actualiza la calificación en vivo al escribir atenuantes
+    inputAtenuantes.addEventListener('input', () => {
+      const res = calcularCalificacion(inputAtenuantes.value);
+      if (res.valido) {
+        inputCalificacion.value = res.calificacion;
+        limpiarError();
+      }
+    });
+
+    function mostrarError(texto) {
+      mensajeError.textContent = texto;
+      mensajeError.style.display = 'block';
+    }
+
+    function limpiarError() {
+      mensajeError.textContent = '';
+      mensajeError.style.display = 'none';
+    }
+
+    function escaparHTML(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto ?? '';
+      return div.innerHTML;
+    }
+
+    function sincronizar() {
+      localStorage.setItem(CLAVE_STORAGE, JSON.stringify(registros));
+      renderizarTabla();
+    }
+
+    function renderizarTabla() {
+      tablaCuerpo.innerHTML = '';
+
+      if (registros.length === 0) {
+        tablaCuerpo.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: #64748b;">
+              No hay registros guardados todavía.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      registros.forEach((reg, index) => {
+        tablaCuerpo.innerHTML += `
+          <tr>
+            <td>${escaparHTML(reg.nombre)}</td>
+            <td><strong>${escaparHTML(reg.atenuantes.toUpperCase())}</strong></td>
+            <td><span class="nota-pill">${escaparHTML(reg.calificacion)}</span></td>
+            <td>${escaparHTML(reg.notas || '—')}</td>
+            <td>
+              <div class="acciones">
+                <button type="button" class="btn-edit" onclick="prepararEdicion(${index})">Editar</button>
+                <button type="button" class="btn-del" onclick="eliminar(${index})">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function resetearFormulario() {
+      form.reset();
+      inputIndice.value = '-1';
+      btnGuardar.textContent = 'Agregar';
+      btnCancelar.style.display = 'none';
+      limpiarError();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      limpiarError();
+
+      const nombre = inputNombre.value.trim();
+      const atenuantesTexto = inputAtenuantes.value.trim();
+      const notas = inputNotas.value.trim();
+      const indice = parseInt(inputIndice.value, 10);
+
+      if (nombre.length < 2) {
+        mostrarError('El nombre debe tener al menos 2 caracteres.');
+        return;
+      }
+
+      const calculo = calcularCalificacion(atenuantesTexto, inputCalificacion.value);
+      if (!calculo.valido) {
+        mostrarError(calculo.error);
+        return;
+      }
+
+      let calificacionFinal = calculo.calificacion;
+      if (inputCalificacion.value !== '') {
+        const manual = Number(inputCalificacion.value);
+        if (Number.isNaN(manual) || manual < 0 || manual > 100) {
+          mostrarError('La calificación debe ser un número entre 0 y 100.');
+          return;
+        }
+        calificacionFinal = manual;
+      }
+
+      const nuevoRegistro = {
+        nombre,
+        atenuantes: atenuantesTexto.toUpperCase(),
+        calificacion: calificacionFinal,
+        notas
+      };
+
+      if (indice === -1) {
+        registros.push(nuevoRegistro);
+      } else {
+        registros[indice] = nuevoRegistro;
+      }
+
+      resetearFormulario();
+      sincronizar();
+    });
+
+    btnCancelar.addEventListener('click', resetearFormulario);
+
+    function prepararEdicion(index) {
+      const reg = registros[index];
+      if (!reg) return;
+
+      limpiarError();
+      inputNombre.value = reg.nombre;
+      inputAtenuantes.value = reg.atenuantes;
+      inputCalificacion.value = reg.calificacion;
+      inputNotas.value = reg.notas;
+      inputIndice.value = index;
+      btnGuardar.textContent = 'Actualizar';
+      btnCancelar.style.display = 'inline-block';
+    }
+
+    function eliminar(index) {
+      registros.splice(index, 1);
+      if (parseInt(inputIndice.value, 10) === index) {
+        resetearFormulario();
+      }
+      sincronizar();
+    }
+
+    renderizarTabla();
+  </script>
+
+</body>
+</html>

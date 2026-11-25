@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD con Arreglos en JavaScript</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+    form { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    input { padding: 0.5rem; flex: 1; }
+    button { padding: 0.5rem 1rem; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #ddd; padding: 0.6rem; text-align: left; }
+    .btn-edit { background: #f59e0b; border: none; color: white; border-radius: 4px; }
+    .btn-del { background: #ef4444; border: none; color: white; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <h2>Gestión de Usuarios (Sin Base de Datos)</h2>
+
+  <!-- Formulario para Crear y Actualizar -->
+  <form id="formulario">
+    <input type="hidden" id="indiceEdicion" value="-1">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="email" id="correo" placeholder="Correo" required>
+    <button type="submit" id="btnGuardar">Agregar</button>
+  </form>
+
+  <!-- Tabla para Leer -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo"></tbody>
+  </table>
+
+  <script>
+    // 1. Inicializar el arreglo (recupera de localStorage o empieza vacío)
+    let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+
+    const form = document.getElementById('formulario');
+    const tablaCuerpo = document.getElementById('tablaCuerpo');
+    const inputNombre = document.getElementById('nombre');
+    const inputCorreo = document.getElementById('correo');
+    const inputIndice = document.getElementById('indiceEdicion');
+    const btnGuardar = document.getElementById('btnGuardar');
+
+    // Función auxiliar para guardar en el navegador y refrescar la tabla
+    function sincronizar() {
+      localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
+      renderizarTabla();
+    }
+
+    // 2. READ (Leer y mostrar en el HTML)
+    function renderizarTabla() {
+      tablaCuerpo.innerHTML = '';
+      usuarios.forEach((usuario, index) => {
+        tablaCuerpo.innerHTML += `
+          <tr>
+            <td>${usuario.nombre}</td>
+            <td>${usuario.correo}</td>
+            <td>
+              <button class="btn-edit" onclick="prepararEdicion(${index})">Editar</button>
+              <button class="btn-del" onclick="eliminar(${index})">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 3. CREATE & UPDATE (Crear o Actualizar según el índice)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nuevoUsuario = {
+        nombre: inputNombre.value.trim(),
+        correo: inputCorreo.value.trim()
+      };
+
+      const indice = parseInt(inputIndice.value);
+
+      if (indice === -1) {
+        // Crear: agregamos al arreglo
+        usuarios.push(nuevoUsuario);
+      } else {
+        // Actualizar: reemplazamos en la posición exacta
+        usuarios[indice] = nuevoUsuario;
+        inputIndice.value = -1;
+        btnGuardar.textContent = 'Agregar';
+      }
+
+      form.reset();
+      sincronizar();
+    });
+
+    // Cargar datos en el formulario para editar
+    function prepararEdicion(index) {
+      inputNombre.value = usuarios[index].nombre;
+      inputCorreo.value = usuarios[index].correo;
+      inputIndice.value = index;
+      btnGuardar.textContent = 'Actualizar';
+    }
+
+    // 4. DELETE (Eliminar del arreglo usando splice)
+    function eliminar(index) {
+      usuarios.splice(index, 1);
+      sincronizar();
+    }
+
+    // Cargar datos iniciales al abrir la página
+    renderizarTabla();
+  </script>
+
+</body>
+</html>
