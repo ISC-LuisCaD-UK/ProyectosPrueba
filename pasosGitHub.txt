@@ -1,0 +1,19 @@
+pasos:
+
+Con tu esquema de .gitignore (* y luego !carpeta/**), la regla práctica es muy sencilla:
+
+Plain Text
+1. Crear carpeta.
+2. Agregar:
+!carpeta/
+!carpeta/**
+3. git add .
+4. git commit -m "..."
+5. git push origin master
+
+y cuando solo modifiques archivos existentes:
+
+Plain Text
+git add .
+git commit -m "..."
+git push origin master

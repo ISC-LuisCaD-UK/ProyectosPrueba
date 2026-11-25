@@ -1,0 +1,6 @@
+--- 2609.6 0906Su26
+Carpeta creada en 2026-2
+Esta carpeta contiene solo archivos desarrollados de agosto 2026 en adelante
+Queda pendiente de trasladar los libros en formato .pdf a la carpeta Programming books PRGBooks
+Las carpetas con z- es para que se vayan al final de la lista de archivos y carpetas
+------
