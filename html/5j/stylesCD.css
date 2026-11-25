@@ -1,0 +1,53 @@
+h1 {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: darkblue;
+    text-align: center;
+}
+
+h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: dodgerblue;
+}
+
+p, ul, ol {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+section > p {
+    text-indent: 40px;
+}
+
+ol {
+    color: chocolate;
+}
+
+blockquote {
+    font-style: italic;
+    text-align: right;
+}
+
+.area {
+    padding: 30px;
+    width: 1000px;
+    text-align: justify;
+    background-color: aquamarine;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px;
+    border-radius: 10px;
+    border-color: rgba(82, 90, 87, 0.644);
+    border-style: double;
+}
+
+.notas {
+    width: 500px;
+    text-align: justify;
+    background-color: lightyellow;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.destacado {
+    font-style: oblique;
+    color:cornflowerblue;
+}
